@@ -1,0 +1,1 @@
+Collection of scripts I find myself commonly using. Every script is small and self contained. To use, simply drag onto any gameobject, and tweak values in the inspector. Sensible defaults are given, and no script depends on anything other than the latest Unity.
