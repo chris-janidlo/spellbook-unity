@@ -39,7 +39,7 @@ public class Freeform3DMovement : MonoBehaviour {
 		else if (Input.GetKey(DownKey))
 			vel.y = -AxisSpeeds.y;
 
-		rb.velocity = vel;
+		rb.velocity = transform.TransformDirection(vel);
 	}
 
 }
