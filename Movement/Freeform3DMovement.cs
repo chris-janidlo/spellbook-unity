@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 
-namespace crass {
+namespace crass
+{
 // axial movement in 3D space
 // you probably want to disable gravity on the rigidbody
 [RequireComponent(typeof(Rigidbody))]
-public class Freeform3DMovement : MonoBehaviour {
-
+public class Freeform3DMovement : MonoBehaviour
+{
 	public string ForwardKey = "w";
 	public string BackwardKey = "s";
 	public string LeftKey = "a";
@@ -17,11 +18,13 @@ public class Freeform3DMovement : MonoBehaviour {
 
 	Rigidbody rb;
 
-	void Start () {
+	void Start ()
+	{
 		rb = GetComponent<Rigidbody>();
 	}
 	
-	void Update () {
+	void Update ()
+	{
 		Vector3 vel = new Vector3();
 		
 		if (Input.GetKey(ForwardKey))
@@ -41,6 +44,5 @@ public class Freeform3DMovement : MonoBehaviour {
 
 		rb.velocity = vel;
 	}
-
 }
 }
