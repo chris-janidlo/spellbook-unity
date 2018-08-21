@@ -1,1 +1,3 @@
-Collection of scripts I find myself commonly using. Every script is small and self contained. To use, simply drag onto any gameobject, and tweak values in the inspector. Sensible defaults are given, and no script depends on anything other than the latest Unity.
+Stuff I like that makes coding happen faster. Add `using crass;` to your scripts as needed, or drag and drop scripts onto GameObjects as needed.
+
+Not everything is original, but if I didn't make it, I've credited it.
