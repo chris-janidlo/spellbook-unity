@@ -5,63 +5,54 @@ using UnityEngine;
 
 namespace crass
 {
-// TODO: change implementation to linq
+// randomly, infinitely cycle through a series of items. shuffles them into bags so that repetitions are infrequent; repetitions can be disabled, too, if the items are unique. use cases include: footstep sounds, tetris pieces, loot tables
 [Serializable]
 public class BagRandomizer<T>
 {
 	public List<T> Items;
-	[Tooltip("Set this to true to prevent items from appearing twice in a row. Only works if every item in items is unique.")]
-	public bool ItemsAreUnique;
+	[Tooltip("If this is true and every value in Items is unique, GetNext will never return the same value twice.")]
+	public bool AvoidRepeats;
 
 	private List<T> bag = new List<T>();
 	private int index = 0;
 
 	public T GetNext ()
 	{
-		if (bag.Count == 0 || index == bag.Count)
+		if (Items.Count == 0)
+		{
+			throw new Exception("Items cannot be empty");
+		}
+
+		if (index == bag.Count)
 		{
 			bag = generateNewBag();
 			index = 0;
 		}
+
 		T tmp = bag[index++];
 		return tmp;
 	}
 
 	private List<T> generateNewBag ()
 	{
-		List<T> tmp;
+		List<T> tmp = new List<T>(Items);
 		int tries = 0;
 
 		do
 		{
-			tmp = shuffledClone(Items);
+			tmp.ShuffleInPlace();
 			tries++;
 		}
 		while
 		(
-			ItemsAreUnique && bag.Count > 0 && tries < 37 && tmp[0].Equals(bag[bag.Count - 1])
+			// preconditions. if any are false we don't care if we get a repeat
+			// check for tries to avoid worse-case performance of O(infinity)
+			AvoidRepeats && Items.Count > 1 && Items.ValuesAreUnique() && tries < 37 &&
+			// repetition check
+			tmp[0].Equals(bag[bag.Count - 1])
 		);
 
 		return tmp;
-	}
-
-	private List<T> shuffledClone (IList<T> list)
-	{
-		List<T> output = new List<T>(list.Count);
-		for (int i = 0; i < list.Count; i++)
-		{
-			int j = UnityEngine.Random.Range(0, i+1);
-			if (j == output.Count)
-			{
-				output.Add(list[i]);
-			}
-			else
-			{
-				output.Add(output[j]);
-				output[j] = list[i];
-			}
-		}
-		return output;
 	}
 }
 }
