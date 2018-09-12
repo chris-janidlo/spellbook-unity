@@ -5,7 +5,7 @@ namespace crass
 {
 public class Singleton<T> : MonoBehaviour
 {
-	protected static bool _allowReset = false;
+	private static bool _allowReset = false;
 
 	static T _instance;
 	public static T Instance
@@ -18,7 +18,7 @@ public class Singleton<T> : MonoBehaviour
 			}
 			return _instance;
 		}
-		protected set
+		private set
 		{
 			if (!_allowReset && _instance != null)
 			{
@@ -28,8 +28,9 @@ public class Singleton<T> : MonoBehaviour
 		}
 	}
 
-	protected void SingletonAllowReset () {
-		_allowReset = true;
+	protected void SingletonSetInstance (T instance, bool allowReset) {
+		Instance = instance;
+		_allowReset = allowReset;
 	}
 }
 }

@@ -13,7 +13,7 @@ public class CameraRayCaster : Singleton<CameraRayCaster>
 
 	void Start ()
 	{
-		Instance = this;
+		SingletonSetInstance(this, false);
 	}
 	
 	void Update ()
