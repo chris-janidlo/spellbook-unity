@@ -28,7 +28,8 @@ public class Singleton<T> : MonoBehaviour
 		}
 	}
 
-	protected void SingletonSetInstance (T instance, bool allowReset) {
+	protected void SingletonSetInstance (T instance, bool allowReset)
+	{
 		Instance = instance;
 		_allowReset = allowReset;
 	}
