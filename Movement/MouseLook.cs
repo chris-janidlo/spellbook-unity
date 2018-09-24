@@ -22,7 +22,7 @@ public class MouseLook : MonoBehaviour
 	Vector2 targetDirection;
 	Vector2 targetCharacterDirection;
 
-	void Start()
+	void Start ()
 	{
 		// Set target direction to the camera's initial orientation.
 		targetDirection = transform.localRotation.eulerAngles;
@@ -32,7 +32,7 @@ public class MouseLook : MonoBehaviour
 			targetCharacterDirection = CharacterBody.transform.localRotation.eulerAngles;
 	}
 
-	void Update()
+	void Update ()
 	{
 		// Ensure the cursor is always locked when set
 		if (LockCursor)
