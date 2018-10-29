@@ -4,45 +4,6 @@ using UnityEngine;
 
 public static class ScriptableInput
 {
-	static ScriptableInput ()
-	{
-		Mapping = new Dictionary<string, InputAxis>
-		{
-			{ "Jet", new InputAxis
-			{
-				Positive = KeyCode.W,
-				Negative = KeyCode.S,
-			}},
-			{ "Lift", new InputAxis
-			{
-				Positive = KeyCode.Space,
-				Negative = KeyCode.LeftShift,
-				AltPositive = KeyCode.E,
-				AltNegative = KeyCode.Q,
-			}},
-			{ "Strafe", new InputAxis
-			{
-				Positive = KeyCode.D,
-				Negative = KeyCode.A,
-			}},
-			{ "Pitch", new InputAxis
-			{
-				Positive = KeyCode.DownArrow,
-				Negative = KeyCode.UpArrow,
-			}},
-			{ "Turn", new InputAxis
-			{
-				Positive = KeyCode.RightArrow,
-				Negative = KeyCode.LeftArrow,
-			}},
-		};
-		foreach (KeyValuePair<string, InputAxis> entry in Mapping)
-		{
-			entry.Value.Sensitivity = 3f;
-			entry.Value.Gravity = 3f;
-		}
-	}
-
 	public static Dictionary<string, InputAxis> Mapping;
 
 	public static float GetAxis (string name)
