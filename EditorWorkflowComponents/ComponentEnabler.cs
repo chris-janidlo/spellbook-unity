@@ -7,21 +7,21 @@ namespace crass
 public class ComponentEnabler : MonoBehaviour
 {
 	[Tooltip("Components in this list will be _enabled_ on awake in production.")]
-	public List<MonoBehaviour> ToEnable;
+	public List<Component> ToEnable;
 	[Tooltip("Components in this list will be _disabled_ on awake in production.")]
-	public List<MonoBehaviour> ToDisable;
+	public List<Component> ToDisable;
 
 #if !UNITY_EDITOR
 	void Awake ()
 	{
-		foreach (var mb in ToEnable)
+		foreach (var com in ToEnable)
 		{
-			mb.enabled = true;
+			com.enabled = true;
 		}
 
-		foreach (var mb in ToDisable)
+		foreach (var com in ToDisable)
 		{
-			mb.enabled = false;
+			com.enabled = false;
 		}
 	}
 #endif
