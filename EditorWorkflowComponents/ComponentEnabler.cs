@@ -7,9 +7,9 @@ namespace crass
 public class ComponentEnabler : MonoBehaviour
 {
 	[Tooltip("Components in this list will be _enabled_ on awake in production.")]
-	public List<Component> ToEnable;
+	public List<Behaviour> ToEnable;
 	[Tooltip("Components in this list will be _disabled_ on awake in production.")]
-	public List<Component> ToDisable;
+	public List<Behaviour> ToDisable;
 
 #if !UNITY_EDITOR
 	void Awake ()
