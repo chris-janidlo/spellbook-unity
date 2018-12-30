@@ -33,5 +33,10 @@ public class Singleton<T> : MonoBehaviour
 		Instance = instance;
 		_allowReset = allowReset;
 	}
+
+	protected T SingletonGetInstance ()
+	{
+		return _instance;
+	}
 }
 }
