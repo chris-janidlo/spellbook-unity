@@ -22,6 +22,8 @@ public class MouseLook : MonoBehaviour
 	Vector2 targetDirection;
 	Vector2 targetCharacterDirection;
 
+	CursorLockMode previousLockMode;
+
 	void Start ()
 	{
 		// Set target direction to the camera's initial orientation.
@@ -30,6 +32,8 @@ public class MouseLook : MonoBehaviour
 		// Set target direction for the character body to its inital state.
 		if (CharacterBody)
 			targetCharacterDirection = CharacterBody.transform.localRotation.eulerAngles;
+
+		CursorLockMode previousLockMode = Cursor.lockState;
 	}
 
 	void Update ()
@@ -78,6 +82,11 @@ public class MouseLook : MonoBehaviour
 			var yRotation = Quaternion.AngleAxis(mousePosition.x, transform.InverseTransformDirection(Vector3.up));
 			transform.localRotation *= yRotation;
 		}
+	}
+
+	void OnDestroy ()
+	{
+		Cursor.lockState = previousLockMode;
 	}
 }
 }
