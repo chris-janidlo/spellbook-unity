@@ -33,7 +33,7 @@ public class MouseLook : MonoBehaviour
 		if (CharacterBody)
 			targetCharacterDirection = CharacterBody.transform.localRotation.eulerAngles;
 
-		CursorLockMode previousLockMode = Cursor.lockState;
+		previousLockMode = Cursor.lockState;
 	}
 
 	void Update ()
