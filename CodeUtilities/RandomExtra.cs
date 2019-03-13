@@ -24,5 +24,10 @@ public static class RandomExtra
 		float chance = 1 - Mathf.Pow(1 - probability, Time.deltaTime);
 		return Chance(chance);
 	}
+
+	public static float Range (Vector2 range)
+	{
+		return Random.Range(range.x, range.y);
+	}
 }
 }
