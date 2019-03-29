@@ -29,5 +29,10 @@ public static class RandomExtra
 	{
 		return Random.Range(range.x, range.y);
 	}
+
+	public static int Range (Vector2Int range)
+	{
+		return Random.Range(range.x, range.y);
+	}
 }
 }
