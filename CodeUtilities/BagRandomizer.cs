@@ -47,7 +47,7 @@ public class BagRandomizer<T>
 		(
 			// preconditions. if any are false we don't care if we get a repeat
 			// check for tries to avoid worse-case performance of O(infinity)
-			AvoidRepeats && Items.Count > 1 && Items.ValuesAreUnique() && tries < 37 &&
+			AvoidRepeats && bag.Count > 0 && Items.Count > 1 && Items.ValuesAreUnique() && tries < 37 &&
 			// repetition check
 			tmp[0].Equals(bag[bag.Count - 1])
 		);
