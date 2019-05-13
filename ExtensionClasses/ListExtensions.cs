@@ -22,5 +22,10 @@ public static class ListExtensions
 	{
 		return list.Distinct().Count() == list.Count;
 	}
+
+	public static T PickRandom<T> (this IList<T> list)
+	{
+		return list[Random.Range(0, list.Count)];
+	}
 }
 }
