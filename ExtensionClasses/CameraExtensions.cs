@@ -28,17 +28,17 @@ public static class CameraExtensions
 
 	static IEnumerator screenShake (Camera camera, float time, float amount)
 	{
-		Vector3 originalPosition = camera.transform.position;
+		Vector3 originalPosition = camera.transform.localPosition;
 		float timer = time;
 
 		while (timer > 0)
 		{
 			float offset = Mathf.Lerp(amount, 0, 1 - timer / time);
-			camera.transform.position = originalPosition + Random.insideUnitSphere * offset;
+			camera.transform.localPosition = originalPosition + Random.insideUnitSphere * offset;
 			timer -= Time.deltaTime;
 			yield return null;
 		}
-		camera.transform.position = originalPosition;
+		camera.transform.localPosition = originalPosition;
 
 		Object.Destroy(shakingObj);
 		shakingObj = null;
