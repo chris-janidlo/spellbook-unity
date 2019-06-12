@@ -10,11 +10,27 @@ public class Floater2D : MonoBehaviour
     public class Sin
     {
         public float Period, Amplitude;
+        public Vector2 RandomStartPhaseRange;
+
         public float Offset { get; set; } = 0;
+
+        float? _phase;
+        float phase
+        {
+            get
+            {
+                if (_phase == null)
+                {
+                    _phase = RandomExtra.Range(RandomStartPhaseRange);
+                }
+
+                return (float) _phase;
+            }
+        }
 
         public float CurrentValue ()
         {
-            return Amplitude * Mathf.Sin((2 * Mathf.PI / Period) * Time.time) + Offset;
+            return Amplitude * Mathf.Sin((2 * Mathf.PI / Period) * Time.time - phase) + Offset;
         }
     }
 
