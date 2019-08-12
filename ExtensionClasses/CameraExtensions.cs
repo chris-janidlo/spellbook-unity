@@ -17,16 +17,26 @@ public static class CameraExtensions
 	// returns true if shake started successfully; false if camera is already shaking
 	public static bool ShakeScreen (this Camera camera, float time, float amount)
 	{
+		return shake(camera, time, amount, false);
+	}
+
+	public static bool ShakeScreen2D (this Camera camera, float time, float amount)
+	{
+		return shake(camera, time, amount, true);
+	}
+
+	static bool shake (Camera camera, float time, float amount, bool is2D)
+	{
 		if (shakingObj != null) return false;
 
 		shakingObj = new GameObject("shaker", typeof(shaker));
 		shakingObj.hideFlags = HideFlags.HideInHierarchy;
-		shakingObj.GetComponent<shaker>().StartCoroutine(screenShake(camera, time, amount));
+		shakingObj.GetComponent<shaker>().StartCoroutine(screenShake(camera, time, amount, is2D));
 
 		return true;
 	}
 
-	static IEnumerator screenShake (Camera camera, float time, float amount)
+	static IEnumerator screenShake (Camera camera, float time, float amount, bool is2D)
 	{
 		Vector3 originalPosition = camera.transform.localPosition;
 		float timer = time;
@@ -34,7 +44,8 @@ public static class CameraExtensions
 		while (timer > 0)
 		{
 			float offset = Mathf.Lerp(amount, 0, 1 - timer / time);
-			camera.transform.localPosition = originalPosition + Random.insideUnitSphere * offset;
+			Vector3 rand = is2D ? (Vector3) Random.insideUnitCircle : Random.insideUnitSphere;
+			camera.transform.localPosition = originalPosition + rand * offset;
 			timer -= Time.deltaTime;
 			yield return null;
 		}
