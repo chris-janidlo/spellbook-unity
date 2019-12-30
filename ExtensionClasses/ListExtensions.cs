@@ -27,5 +27,10 @@ public static class ListExtensions
 	{
 		return list[Random.Range(0, list.Count)];
 	}
+
+	public static IList<T> ConcatItems<T> (this IList<T> list, params T[] items)
+	{
+		return list.Concat(items).ToList();
+	}
 }
 }
