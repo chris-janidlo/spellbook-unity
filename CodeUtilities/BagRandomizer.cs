@@ -16,11 +16,11 @@ public class BagRandomizer<T>
 	private List<T> bag = new List<T>();
 	private int index = 0;
 
-	public T GetNext ()
+	public T PeekNext ()
 	{
 		if (Items.Count == 0)
 		{
-			throw new Exception("Items cannot be empty");
+			throw new InvalidOperationException("Items cannot be empty");
 		}
 
 		if (index == bag.Count)
@@ -29,7 +29,13 @@ public class BagRandomizer<T>
 			index = 0;
 		}
 
-		T tmp = bag[index++];
+		return bag[index];
+	}
+
+	public T GetNext ()
+	{
+		T tmp = PeekNext();
+		index++;
 		return tmp;
 	}
 
