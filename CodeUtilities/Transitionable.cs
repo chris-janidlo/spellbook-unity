@@ -8,11 +8,17 @@ namespace crass
 public abstract class Transitionable<T>
 {
 	[SerializeField]
-	T _value;
+	T value;
 	public T Value
 	{
-		get => _value;
-		private set => _value = value;
+		get => value;
+
+		// ONLY INTENDED FOR EXTERNAL USE. Set this.value directly inside this class.
+		set
+		{
+			stopCoroutineIfRunning();
+			this.value = value;
+		}
 	}
 
 	[Min(0)]
@@ -22,6 +28,7 @@ public abstract class Transitionable<T>
 
 	MonoBehaviour attachedMonoBehaviour;
 	IEnumerator enumerator;
+	T currentTarget;
 
 	public void AttachMonoBehaviour (MonoBehaviour monoBehaviour)
 	{
@@ -40,7 +47,7 @@ public abstract class Transitionable<T>
 
 		if (time == 0)
 		{
-			Value = targetValue;
+			value = targetValue;
 			return;
 		}
 
@@ -49,10 +56,31 @@ public abstract class Transitionable<T>
 			throw new ArgumentException($"transition time cannot be less than 0 seconds (given: {time})");
 		}
 
-		if (enumerator != null) attachedMonoBehaviour.StopCoroutine(enumerator);
+		if (Value != null && Value.Equals(targetValue)) return;
+
+		currentTarget = targetValue;
+
+		stopCoroutineIfRunning();
 
 		enumerator = transitionRoutine(targetValue, time, ease);
 		attachedMonoBehaviour.StartCoroutine(enumerator);
+	}
+
+	public void StartTransitionToIfNotAlreadyStarted (T targetValue, float? timeOverride = null, EasingFunction.Ease? easeOverride = null)
+	{
+		if (enumerator == null || currentTarget == null || !currentTarget.Equals(targetValue))
+		{
+			StartTransitionTo(targetValue, timeOverride, easeOverride);
+		}
+	}
+
+	void stopCoroutineIfRunning ()
+	{
+		if (enumerator != null)
+		{
+			attachedMonoBehaviour.StopCoroutine(enumerator);
+			enumerator = null;
+		}
 	}
 
 	IEnumerator transitionRoutine (T targetValue, float time, EasingFunction.Ease ease)
@@ -71,12 +99,14 @@ public abstract class Transitionable<T>
 
 		while (timer < time)
 		{
-			Value = lerp(originalValue, targetValue, easeLerpTime(timer / time));
+			value = lerp(originalValue, targetValue, easeLerpTime(timer / time));
 			timer += UnityEngine.Time.deltaTime;
 			yield return null;
 		}
 
-		Value = targetValue;
+		value = targetValue;
+
+		enumerator = null;
 	}
 
 	protected abstract T lerp (T a, T b, float t);
