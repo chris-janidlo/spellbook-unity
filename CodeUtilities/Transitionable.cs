@@ -16,7 +16,7 @@ public abstract class Transitionable<T>
 		// ONLY INTENDED FOR EXTERNAL USE. Set this.value directly inside this class.
 		set
 		{
-			stopCoroutineIfRunning();
+			StopTransitioning();
 			this.value = value;
 		}
 	}
@@ -60,7 +60,7 @@ public abstract class Transitionable<T>
 
 		currentTarget = targetValue;
 
-		stopCoroutineIfRunning();
+		StopTransitioning();
 
 		enumerator = transitionRoutine(targetValue, time, ease);
 		attachedMonoBehaviour.StartCoroutine(enumerator);
@@ -74,7 +74,13 @@ public abstract class Transitionable<T>
 		}
 	}
 
-	void stopCoroutineIfRunning ()
+	public void FlashFromTo (T initialValue, T targetValue, float? timeOverride = null, EasingFunction.Ease? easeOverride = null)
+	{
+		value = initialValue;
+		StartTransitionTo(targetValue, timeOverride, easeOverride);
+	}
+
+	public void StopTransitioning ()
 	{
 		if (enumerator != null)
 		{
@@ -140,5 +146,11 @@ public class TransitionableVector3 : Transitionable<Vector3>
 public class TransitionableVector3Slerp : Transitionable<Vector3>
 {
 	protected override Vector3 lerp (Vector3 a, Vector3 b, float t) => Vector3.Slerp(a, b, t);
+}
+
+[Serializable]
+public class TransitionableQuaternion : Transitionable<Quaternion>
+{
+	protected override Quaternion lerp (Quaternion a, Quaternion b, float t) => Quaternion.Lerp(a, b, t);
 }
 }
