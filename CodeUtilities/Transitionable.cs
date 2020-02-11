@@ -68,10 +68,15 @@ public abstract class Transitionable<T>
 
 	public void StartTransitionToIfNotAlreadyStarted (T targetValue, float? timeOverride = null, EasingFunction.Ease? easeOverride = null)
 	{
-		if (enumerator == null || currentTarget == null || !currentTarget.Equals(targetValue))
+		if (!IsTransitioningTo(targetValue))
 		{
 			StartTransitionTo(targetValue, timeOverride, easeOverride);
 		}
+	}
+
+	public bool IsTransitioningTo (T targetValue)
+	{
+		return enumerator != null && currentTarget != null && currentTarget.Equals(targetValue);
 	}
 
 	public void FlashFromTo (T initialValue, T targetValue, float? timeOverride = null, EasingFunction.Ease? easeOverride = null)
