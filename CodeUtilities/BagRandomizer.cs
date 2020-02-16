@@ -9,56 +9,105 @@ namespace crass
 [Serializable]
 public class BagRandomizer<T>
 {
+	public enum PRNGType
+	{
+		Global,
+		Local,
+		LocalSeeded
+	}
+
 	public List<T> Items;
+
 	[Tooltip("If this is true and every value in Items is unique, GetNext will never return the same value twice.")]
 	public bool AvoidRepeats;
 
-	private List<T> bag = new List<T>();
-	private int index = 0;
+	[Tooltip("Sets which PRNG to use. Global uses the global UnityEngine.Random, while the Local values instantiate one PRNG per BagRandomizer. If set to LocalSeeded, the LocalSeed value is used; if set to Local, an arbitrary seed is chosen.")]
+	public PRNGType Type;
+
+	[Tooltip("The seed used by the local PRNG when Type is set to PRNGType.LocalSeeded.")]
+	public int LocalSeed;
+
+	System.Random _localRandom;
+	System.Random localRandom
+	{
+		get
+		{
+			if (_localRandom == null)
+				_localRandom = new System.Random(Type == PRNGType.LocalSeeded ? LocalSeed : Environment.TickCount);
+
+			return _localRandom;
+		}
+	}
+
+	bool actuallyAvoidRepeats => AvoidRepeats && Items.ValuesAreUnique() && Items.Count >= 2;
+
+	List<T> bag;
+	int _index = -1;
+
+	T previousItem;
+	bool avoidingPrevious;
 
 	public T PeekNext ()
 	{
 		if (Items.Count == 0)
-		{
 			throw new InvalidOperationException("Items cannot be empty");
-		}
 
-		if (index == bag.Count)
+		if (bag == null || bag.Count == 0)
 		{
-			bag = generateNewBag();
-			index = 0;
+			bag = new List<T>(Items);
+
+			if (actuallyAvoidRepeats && avoidingPrevious)
+			{
+				bag.Remove(previousItem);
+			}
 		}
 
-		return bag[index];
+		return bag[currentIndex()];
 	}
 
 	public T GetNext ()
 	{
-		T tmp = PeekNext();
-		index++;
-		return tmp;
+		T next = PeekNext();
+
+		bag.RemoveAt(currentIndex());
+		clearCurrentIndex();
+
+		if (avoidingPrevious)
+		{
+			avoidingPrevious = false;
+			bag.Add(previousItem);
+		}
+
+		if (actuallyAvoidRepeats && bag.Count == 0)
+		{
+			avoidingPrevious = true;
+			previousItem = next;
+		}
+
+		return next;
 	}
 
-	private List<T> generateNewBag ()
+	int currentIndex ()
 	{
-		List<T> tmp = new List<T>(Items);
-		int tries = 0;
+		if (_index >= 0) return _index;
 
-		do
+		switch (Type)
 		{
-			tmp.ShuffleInPlace();
-			tries++;
-		}
-		while
-		(
-			// preconditions. if any are false we don't care if we get a repeat
-			// check for tries to avoid worse-case performance of O(infinity)
-			AvoidRepeats && bag.Count > 0 && Items.Count > 1 && Items.ValuesAreUnique() && tries < 37 &&
-			// repetition check
-			tmp[0].Equals(bag[bag.Count - 1])
-		);
+			case PRNGType.Global:
+				return _index = UnityEngine.Random.Range(0, bag.Count);
+			
+			case PRNGType.Local:
+			case PRNGType.LocalSeeded:
+				return _index = localRandom.Next(bag.Count);
 
-		return tmp;
+			default:
+				throw new InvalidOperationException($"unexpected PRNGType {Type}");
+		}
+	}
+
+	void clearCurrentIndex ()
+	{
+		_index = -1;
 	}
 }
 }
