@@ -87,6 +87,11 @@ public class BagRandomizer<T>
 		return next;
 	}
 
+	public void SetPRNG (System.Random prng)
+	{
+		_localRandom = prng;
+	}
+
 	int currentIndex ()
 	{
 		if (_index >= 0) return _index;
