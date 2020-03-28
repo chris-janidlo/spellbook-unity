@@ -28,6 +28,24 @@ public class Singleton<T> : MonoBehaviour
 		}
 	}
 
+	protected void SingletonOverwriteInstance (T instance)
+	{
+		SingletonSetInstance(instance, true);
+	}
+
+	protected void SingletonSetPersistantInstance (T instance)
+	{
+		if (SingletonGetInstance() != null)
+		{
+			Destroy(gameObject);
+		}
+		else
+		{
+			SingletonSetInstance(instance, false);
+			DontDestroyOnLoad(gameObject);
+		}
+	}
+
 	protected void SingletonSetInstance (T instance, bool allowReset)
 	{
 		Instance = instance;
