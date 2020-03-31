@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace crass
 {
-public class Singleton<T> : MonoBehaviour
+public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
 	private static bool _allowReset = false;
 
@@ -35,14 +35,18 @@ public class Singleton<T> : MonoBehaviour
 
 	protected void SingletonSetPersistantInstance (T instance)
 	{
-		if (SingletonGetInstance() != null)
+		if (SingletonGetInstance() == instance)
 		{
-			Destroy(gameObject);
+			return;
 		}
-		else
+		else if (SingletonGetInstance() == null)
 		{
 			SingletonSetInstance(instance, false);
 			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
 		}
 	}
 
