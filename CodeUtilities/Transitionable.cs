@@ -21,6 +21,8 @@ public abstract class Transitionable<T>
 		}
 	}
 
+	public bool Transitioning => enumerator != null && currentTarget != null;
+
 	[Min(0)]
 	public float Time;
 
@@ -76,7 +78,7 @@ public abstract class Transitionable<T>
 
 	public bool IsTransitioningTo (T targetValue)
 	{
-		return enumerator != null && currentTarget != null && currentTarget.Equals(targetValue);
+		return Transitioning && currentTarget.Equals(targetValue);
 	}
 
 	public void FlashFromTo (T initialValue, T targetValue, float? timeOverride = null, EasingFunction.Ease? easeOverride = null)
