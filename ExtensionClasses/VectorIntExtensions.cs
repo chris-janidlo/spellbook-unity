@@ -22,5 +22,10 @@ public static class VectorIntExtensions
 			(int) (dividend.z / divisor)
 		);
 	}
+
+	public static Vector3Int Normalize (this Vector3Int vector)
+	{
+		return Vector3Int.RoundToInt(((Vector3) vector).normalized);
+	}
 }
 }
