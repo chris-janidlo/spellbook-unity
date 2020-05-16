@@ -7,14 +7,14 @@ public class SmoothFollow : MonoBehaviour
 	public Transform Target;
 	public Vector3 OffsetFromTarget;
 
-	[Tooltip("How many seconds it takes for this object to reach the offset target position")]
-	public float MoveDelay;
+	[Tooltip("How many seconds it takes for this object to reach the target's position plus the offset")]
+	public float MoveDelay = 0.3f;
 	
-	[Range(0, 1)]
-	[Tooltip("How relatively fast the object matches the target rotation. 0 doesn't match at all, 1 matches instantaneously")]
-	public float RotationFactor;
+	[Tooltip("How many seconds it takes for this object's rotation to reach the target's rotation")]
+	public float RotationDelay = 0.3f;
 
-	Vector3 velocity = Vector3.zero;
+	Vector3 positionvelocity = Vector3.zero;
+	Quaternion rotationVelocity = Quaternion.identity;
 
 	void Start ()
 	{
@@ -26,8 +26,8 @@ public class SmoothFollow : MonoBehaviour
 	
 	void Update ()
 	{
-		transform.position = Vector3.SmoothDamp(transform.position, Target.position + OffsetFromTarget, ref velocity, MoveDelay);
-		transform.rotation = Quaternion.Slerp(transform.rotation, Target.rotation, RotationFactor);
+		transform.position = Vector3.SmoothDamp(transform.position, Target.TransformPoint(OffsetFromTarget), ref positionvelocity, MoveDelay);
+		transform.rotation = transform.rotation.SmoothDampTo(Target.rotation, ref rotationVelocity, RotationDelay);
 	}
 }
 }
