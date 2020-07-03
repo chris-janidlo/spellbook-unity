@@ -27,6 +27,8 @@ namespace crass
 
         void Update ()
         {
+            if (Target == null) return;
+
             Vector3 followPosition = Target.TransformPoint(PositionOffsetFromTarget);
             transform.position = Vector3.SmoothDamp(transform.position, followPosition, ref positionvelocity, MoveDelay);
 
