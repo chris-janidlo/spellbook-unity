@@ -1,4 +1,3 @@
 {
-	"name": "crass.unity-spellbook.Runtime",
-	"references": [ "crass.unity-spellbook.Editor" ]
+	"name": "crass.unity-spellbook.Runtime"
 }
