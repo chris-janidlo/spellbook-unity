@@ -1,0 +1,12 @@
+{
+	"name": "com.crass.unity-spellbook",
+	"version": "1.0.0",
+	"displayName": "Spellbook",
+	"description": "Booke of Spelles for concocting Myrthful Programmes",
+	"unity": "2019.2",
+	"author": {
+		"name": "Chris Janidlo",
+		"email": "christopherjanidlo@gmail.com",
+		"url": "https://crass-sandwich.com"
+	}
+}

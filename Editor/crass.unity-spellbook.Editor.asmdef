@@ -1,0 +1,5 @@
+{
+	"name": "crass.unity-spellbook.Editor",
+	"references": [ "crass.unity-spellbook.Runtime" ],
+	"includePlatforms": [ "Editor" ]
+}
