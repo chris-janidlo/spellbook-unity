@@ -9,6 +9,7 @@ namespace crass
 // example: for enum T boxing an int
     // [Serializable] public class TIntBox : EnumBox<T, int> {}
     // [CustomPropertyDrawer(typeof(TIntBox))] public class TIntBoxDrawer : EnumBoxDrawer<T, int> {}
+[Serializable]
 public class EnumBox<TEnum, TValue> : ISerializationCallbackReceiver
     where TEnum : Enum
     where TValue : struct // TODO: would like to remove this
