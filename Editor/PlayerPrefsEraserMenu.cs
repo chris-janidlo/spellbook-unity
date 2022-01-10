@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace crass
 {
-public class PlayerPrefsEraser : MonoBehaviour
+public class PlayerPrefsEraserMenu : MonoBehaviour
 {
-    [ContextMenu("NUCLEAR BUTTON")]
-    void erase ()
+    [MenuItem("Tools/Clear Player Prefs")]
+    static void erase ()
     {
         PlayerPrefs.DeleteAll();
     }

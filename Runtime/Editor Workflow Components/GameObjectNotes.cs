@@ -6,7 +6,7 @@ namespace crass
 {
 public class GameObjectNotes : MonoBehaviour
 {
-	[TextArea]
+	[TextArea(5, 5000)]
 	public string Notes;
 }
 }
