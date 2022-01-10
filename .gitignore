@@ -1,6 +1,6 @@
 # Visual Studio helper files:
 *~
-vs/
-vscode
+.vs/
+.vscode/
 slnx.sqlite
 *.suo
