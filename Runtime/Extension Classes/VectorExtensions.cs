@@ -17,5 +17,21 @@ public static class VectorExtensions
 		velocityChange = Vector3.ClampMagnitude(velocityChange, currentSpeed.magnitude);
 		return currentSpeed + velocityChange * Time.deltaTime;
 	}
+
+	public static (Vector2, float) DirectionAndDistance (Vector2 a, Vector2 b)
+	{
+		Vector2 heading = b - a;
+		float distance = heading.magnitude;
+		Vector2 direction = heading / distance;
+		return (direction, distance);
+	} 
+
+	public static (Vector3, float) DirectionAndDistance (Vector3 a, Vector3 b)
+	{
+		Vector3 heading = b - a;
+		float distance = heading.magnitude;
+		Vector3 direction = heading / distance;
+		return (direction, distance);
+	} 
 }
 }
