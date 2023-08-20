@@ -48,6 +48,14 @@ namespace crass
     {
         public Crate<TParent> Crate { get; private set; }
 
+        public delegate void TransitionHandler(Crate<TParent> oldCrate, Crate<TParent> newCrate);
+
+        /// <summary>
+        /// Invoked between the completion of <c>oldCrate.OnExit</c> and the start of
+        /// <c>newCrate.OnEnter</c>, and after <c>Crate</c> is updated.
+        /// </summary>
+        public event TransitionHandler OnTransition;
+
         private readonly TParent parent;
         private readonly Dictionary<Type, Crate<TParent>> crates = new();
         private Type initialCrateType;
@@ -125,9 +133,13 @@ namespace crass
             if (newCrateType is null)
                 return;
 
-            Crate.OnExit();
-            Crate = crates[newCrateType];
-            Crate.OnEnter();
+            var oldCrate = Crate;
+            var newCrate = crates[newCrateType];
+
+            oldCrate.OnExit();
+            Crate = newCrate;
+            OnTransition?.Invoke(oldCrate, newCrate);
+            newCrate.OnEnter();
         }
     }
 
