@@ -46,9 +46,10 @@ namespace crass
     public class CrateMachine<TParent> : ACrateMachine
         where TParent : MonoBehaviour
     {
+        public Crate<TParent> Crate { get; private set; }
+
         private readonly TParent parent;
         private readonly Dictionary<Type, Crate<TParent>> crates = new();
-        private Crate<TParent> currentCrate;
         private Type initialCrateType;
         private GameObject driver;
 
@@ -94,16 +95,10 @@ namespace crass
                     $"{machineType} is already built for {parentName}"
                 );
 
-            currentCrate = crates[initialCrateType];
+            Crate = crates[initialCrateType];
             driver = new GameObject($"{parentName} driver (for {machineType})");
             driver.AddComponent<CrateMachineDriver>().Initialize(this, parent);
             return this;
-        }
-
-        public void CustomCall<TInterface>(Action<TInterface> call)
-        {
-            if (currentCrate is TInterface @interface)
-                call(@interface);
         }
 
         internal override void Process(CrateMachineProcessType processType)
@@ -111,18 +106,18 @@ namespace crass
             switch (processType)
             {
                 case CrateMachineProcessType.Update:
-                    currentCrate.OnUpdate();
+                    Crate.OnUpdate();
                     break;
 
                 case CrateMachineProcessType.FixedUpdate:
-                    currentCrate.OnFixedUpdate();
+                    Crate.OnFixedUpdate();
                     break;
 
                 default:
                     throw new ArgumentException(processType.ToString());
             }
 
-            DoTransition(currentCrate.GetTransition());
+            DoTransition(Crate.GetTransition());
         }
 
         private void DoTransition(Type newCrateType)
@@ -130,19 +125,22 @@ namespace crass
             if (newCrateType is null)
                 return;
 
-            currentCrate.OnExit();
-            currentCrate = crates[newCrateType];
-            currentCrate.OnEnter();
+            Crate.OnExit();
+            Crate = crates[newCrateType];
+            Crate.OnEnter();
         }
     }
 
+    // implementation note: could make the virtual methods here protected so that the
+    // parent class and outside classes can't break things, but have chosen not to for
+    // the sake of exposing them to tests. might revisit this decision later.
     public abstract class Crate<TParent>
         where TParent : MonoBehaviour
     {
         // ReSharper disable once InconsistentNaming
         protected TParent C;
 
-        public void SetParent(TParent parent)
+        internal void SetParent(TParent parent)
         {
             C = parent;
         }
