@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace crass
@@ -16,6 +17,18 @@ namespace crass
                 (int)(dividend.y / divisor),
                 (int)(dividend.z / divisor)
             );
+        }
+
+        public static int ManhattanDistanceTo(this Vector3Int self, Vector3Int other)
+        {
+            return Math.Abs(self.x - other.x)
+                + Math.Abs(self.y - other.y)
+                + Math.Abs(self.z - other.z);
+        }
+
+        public static int ManhattanDistanceTo(this Vector2Int self, Vector2Int other)
+        {
+            return Math.Abs(self.x - other.x) + Math.Abs(self.y - other.y);
         }
     }
 }
