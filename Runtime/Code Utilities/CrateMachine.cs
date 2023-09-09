@@ -7,10 +7,10 @@ namespace crass
     // necessary in order to have a non-generic CrateMachineDriver class (since generic MonoBehaviours aren't supported)
     public abstract class ACrateMachine
     {
-        internal abstract void Process(CrateMachineProcessType processType);
+        internal abstract void Process(CrateMachineUpdateType updateType);
     }
 
-    public enum CrateMachineProcessType
+    public enum CrateMachineUpdateType
     {
         Update,
         FixedUpdate
@@ -33,13 +33,13 @@ namespace crass
         void Update()
         {
             if (parent != null && parent.enabled)
-                crateMachine.Process(CrateMachineProcessType.Update);
+                crateMachine.Process(CrateMachineUpdateType.Update);
         }
 
         void FixedUpdate()
         {
             if (parent != null && parent.enabled)
-                crateMachine.Process(CrateMachineProcessType.FixedUpdate);
+                crateMachine.Process(CrateMachineUpdateType.FixedUpdate);
         }
     }
 
@@ -109,23 +109,23 @@ namespace crass
             return this;
         }
 
-        internal override void Process(CrateMachineProcessType processType)
+        internal override void Process(CrateMachineUpdateType updateType)
         {
-            switch (processType)
+            switch (updateType)
             {
-                case CrateMachineProcessType.Update:
+                case CrateMachineUpdateType.Update:
                     Crate.OnUpdate();
                     break;
 
-                case CrateMachineProcessType.FixedUpdate:
+                case CrateMachineUpdateType.FixedUpdate:
                     Crate.OnFixedUpdate();
                     break;
 
                 default:
-                    throw new ArgumentException(processType.ToString());
+                    throw new ArgumentException(updateType.ToString());
             }
 
-            Type transition = Crate.GetTransition(processType);
+            Type transition = Crate.GetTransition(updateType);
             if (transition is { } newCrateType)
                 DoTransition(newCrateType);
         }
@@ -160,7 +160,7 @@ namespace crass
 
         public virtual void OnExit() { }
 
-        public virtual Type GetTransition(CrateMachineProcessType processType)
+        public virtual Type GetTransition(CrateMachineUpdateType updateType)
         {
             return null;
         }
