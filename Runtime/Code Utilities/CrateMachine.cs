@@ -10,7 +10,7 @@ namespace crass
         internal abstract void Process(CrateMachineProcessType processType);
     }
 
-    internal enum CrateMachineProcessType
+    public enum CrateMachineProcessType
     {
         Update,
         FixedUpdate
@@ -125,14 +125,13 @@ namespace crass
                     throw new ArgumentException(processType.ToString());
             }
 
-            DoTransition(Crate.GetTransition());
+            Type transition = Crate.GetTransition(processType);
+            if (transition is { } newCrateType)
+                DoTransition(newCrateType);
         }
 
         private void DoTransition(Type newCrateType)
         {
-            if (newCrateType is null)
-                return;
-
             var oldCrate = Crate;
             var newCrate = crates[newCrateType];
 
@@ -161,7 +160,7 @@ namespace crass
 
         public virtual void OnExit() { }
 
-        public virtual Type GetTransition()
+        public virtual Type GetTransition(CrateMachineProcessType processType)
         {
             return null;
         }
