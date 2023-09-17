@@ -27,7 +27,8 @@ namespace crass
             this.parent = parent;
 
             transform.parent = parent.transform;
-            transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
         }
 
         void Update()
@@ -57,7 +58,8 @@ namespace crass
         public event TransitionHandler OnTransition;
 
         private readonly TParent parent;
-        private readonly Dictionary<Type, Crate<TParent>> crates = new();
+        private readonly Dictionary<Type, Crate<TParent>> crates =
+            new Dictionary<Type, Crate<TParent>>();
         private Type initialCrateType;
         private GameObject driver;
 
