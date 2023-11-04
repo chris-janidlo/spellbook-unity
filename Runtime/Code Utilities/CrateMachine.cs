@@ -105,10 +105,49 @@ namespace crass
                     $"{machineType} is already built for {parentName}"
                 );
 
-            Crate = crates[initialCrateType];
+            Crate = GetCrateUnbounded(initialCrateType);
             driver = new GameObject($"{parentName} driver (for {machineType})");
             driver.AddComponent<CrateMachineDriver>().Initialize(this, parent);
             return this;
+        }
+
+        public Crate<TParent> GetCrate(Type crateType)
+        {
+            if (crateType.IsSubclassOf(typeof(Crate<TParent>)))
+                return GetCrateUnbounded(crateType);
+            else
+            {
+                var machineTypeName = $"CrateMachine<{typeof(TParent).Name}>";
+                var parentName = parent.ToString();
+
+                var message =
+                    $"{machineTypeName} for {parentName}: type {crateType.Name} "
+                    + "is not a valid crate type for this machine";
+                throw new ArgumentException(message);
+            }
+        }
+
+        public TCrate GetCrate<TCrate>()
+            where TCrate : Crate<TParent>
+        {
+            return (TCrate)GetCrateUnbounded(typeof(TCrate));
+        }
+
+        private Crate<TParent> GetCrateUnbounded(Type crateType)
+        {
+            if (crates.TryGetValue(crateType, out var crate))
+                return crate;
+            else
+            {
+                var machineTypeName = $"CrateMachine<{typeof(TParent).Name}>";
+                var crateTypeName = crateType.Name;
+                var parentName = parent.ToString();
+
+                var message =
+                    $"{machineTypeName} for {parentName} has no crate for {crateTypeName} - "
+                    + "did you forget to add one?";
+                throw new KeyNotFoundException(message);
+            }
         }
 
         internal override void Process(CrateMachineUpdateType updateType)
@@ -135,7 +174,7 @@ namespace crass
         private void DoTransition(Type newCrateType)
         {
             var oldCrate = Crate;
-            var newCrate = crates[newCrateType];
+            var newCrate = GetCrate(newCrateType);
 
             oldCrate.OnExit();
             Crate = newCrate;
