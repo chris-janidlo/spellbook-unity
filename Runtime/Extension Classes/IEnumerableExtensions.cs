@@ -3,22 +3,25 @@ using System.Collections.Generic;
 
 namespace crass
 {
-public static class IEnumberableExtensions
-{
-	public static IEnumerable<TSource> DistinctBy<TSource, TKey> (this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+    public static class IEnumberableExtensions
     {
-        HashSet<TKey> seenKeys = new HashSet<TKey>();
-
-        foreach (TSource element in source)
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector
+        )
         {
-			TKey key = keySelector(element);
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
 
-            if (!seenKeys.Contains(key))
+            foreach (TSource element in source)
             {
-				seenKeys.Add(key);
-                yield return element;
+                TKey key = keySelector(element);
+
+                if (!seenKeys.Contains(key))
+                {
+                    seenKeys.Add(key);
+                    yield return element;
+                }
             }
         }
     }
-}
 }

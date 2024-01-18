@@ -14,23 +14,28 @@ namespace crass
             set => m_values[getOrAddEnumPosition(e)] = value;
         }
 
-        [SerializeField] List<TEnum> m_enums;
-        [SerializeField] List<TValue> m_values;
+        [SerializeField]
+        List<TEnum> m_enums;
 
-        public void OnBeforeSerialize ()
+        [SerializeField]
+        List<TValue> m_values;
+
+        public void OnBeforeSerialize()
         {
             createAndResizeLists();
         }
 
-        public void OnAfterDeserialize ()
+        public void OnAfterDeserialize()
         {
             createAndResizeLists();
         }
 
-        void createAndResizeLists ()
+        void createAndResizeLists()
         {
-            if (m_enums == null) m_enums = new List<TEnum>();
-            if (m_values == null) m_values = new List<TValue>();
+            if (m_enums == null)
+                m_enums = new List<TEnum>();
+            if (m_values == null)
+                m_values = new List<TValue>();
 
             foreach (var e in EnumUtil.AllValues<TEnum>())
             {
@@ -38,7 +43,7 @@ namespace crass
             }
         }
 
-        int getOrAddEnumPosition (TEnum e)
+        int getOrAddEnumPosition(TEnum e)
         {
             int position = m_enums.IndexOf(e);
 

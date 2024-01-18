@@ -4,52 +4,55 @@ using UnityEngine;
 
 namespace crass
 {
-// SmoothDamps the particles 
-[RequireComponent(typeof(ParticleSystem))]
-public class ParticleAttractor : MonoBehaviour
-{
-	public Transform Target;
-	public float TravelTime;
-	[Tooltip("Minimum distance from target where a particle will die")]
-	public float KillDistance = 0.01f;
+    // SmoothDamps the particles
+    [RequireComponent(typeof(ParticleSystem))]
+    public class ParticleAttractor : MonoBehaviour
+    {
+        public Transform Target;
+        public float TravelTime;
 
-	public int NumAlive { get; private set; }
+        [Tooltip("Minimum distance from target where a particle will die")]
+        public float KillDistance = 0.01f;
 
-	ParticleSystem system;
-	Vector3[] particleVelocities;
-	ParticleSystem.Particle[] particles;
+        public int NumAlive { get; private set; }
 
-	bool initialized;
+        ParticleSystem system;
+        Vector3[] particleVelocities;
+        ParticleSystem.Particle[] particles;
 
-	void LateUpdate ()
-	{
-		Initialize();
+        bool initialized;
 
-		NumAlive = system.GetParticles(particles);
+        void LateUpdate()
+        {
+            Initialize();
 
-		for (int i = 0; i < NumAlive; i++)
-		{
-			var pos = transform.TransformPoint(particles[i].position);
+            NumAlive = system.GetParticles(particles);
 
-			particles[i].position = transform.InverseTransformPoint(Vector3.SmoothDamp(pos, Target.position, ref particleVelocities[i], TravelTime));
+            for (int i = 0; i < NumAlive; i++)
+            {
+                var pos = transform.TransformPoint(particles[i].position);
 
-			if (Vector3.Distance(pos, Target.position) <= KillDistance)
-			{
-				particles[i].remainingLifetime = 0;
-			}
-		}
-		system.SetParticles(particles, NumAlive);
-	}
+                particles[i].position = transform.InverseTransformPoint(
+                    Vector3.SmoothDamp(pos, Target.position, ref particleVelocities[i], TravelTime)
+                );
 
-	public void Initialize ()
-	{
-		if (!initialized)
-		{
-			initialized = true;
-			system = GetComponent<ParticleSystem>();
-			particleVelocities = new Vector3[system.main.maxParticles];
-			particles = new ParticleSystem.Particle[system.main.maxParticles];
-		}
-	}
-}
+                if (Vector3.Distance(pos, Target.position) <= KillDistance)
+                {
+                    particles[i].remainingLifetime = 0;
+                }
+            }
+            system.SetParticles(particles, NumAlive);
+        }
+
+        public void Initialize()
+        {
+            if (!initialized)
+            {
+                initialized = true;
+                system = GetComponent<ParticleSystem>();
+                particleVelocities = new Vector3[system.main.maxParticles];
+                particles = new ParticleSystem.Particle[system.main.maxParticles];
+            }
+        }
+    }
 }

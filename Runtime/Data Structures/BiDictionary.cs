@@ -8,389 +8,393 @@ using System.Runtime.Serialization;
 
 namespace crass
 {
-[Serializable]
-[DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(DictionaryDebugView<,>))]
-public class BiDictionary<TFirst, TSecond> : IDictionary<TFirst, TSecond>, IDictionary
-{
-	private readonly IDictionary<TFirst, TSecond> _firstToSecond = new Dictionary<TFirst, TSecond>();
-	[NonSerialized]
-	private readonly IDictionary<TSecond, TFirst> _secondToFirst = new Dictionary<TSecond, TFirst>();
-	[NonSerialized]
-	private readonly ReverseDictionary _reverseDictionary;
+    [Serializable]
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(DictionaryDebugView<,>))]
+    public class BiDictionary<TFirst, TSecond> : IDictionary<TFirst, TSecond>, IDictionary
+    {
+        private readonly IDictionary<TFirst, TSecond> _firstToSecond =
+            new Dictionary<TFirst, TSecond>();
 
-	public BiDictionary ()
-	{
-		_reverseDictionary = new ReverseDictionary(this);
-	}
+        [NonSerialized]
+        private readonly IDictionary<TSecond, TFirst> _secondToFirst =
+            new Dictionary<TSecond, TFirst>();
 
-	public IDictionary<TSecond, TFirst> Reverse
-	{
-		get { return _reverseDictionary; }
-	}
+        [NonSerialized]
+        private readonly ReverseDictionary _reverseDictionary;
 
-	public int Count
-	{
-		get { return _firstToSecond.Count; }
-	}
+        public BiDictionary()
+        {
+            _reverseDictionary = new ReverseDictionary(this);
+        }
 
-	object ICollection.SyncRoot
-	{
-		get { return ((ICollection)_firstToSecond).SyncRoot; }
-	}
+        public IDictionary<TSecond, TFirst> Reverse
+        {
+            get { return _reverseDictionary; }
+        }
 
-	bool ICollection.IsSynchronized
-	{
-		get { return ((ICollection)_firstToSecond).IsSynchronized; }
-	}
+        public int Count
+        {
+            get { return _firstToSecond.Count; }
+        }
 
-	bool IDictionary.IsFixedSize
-	{
-		get { return ((IDictionary)_firstToSecond).IsFixedSize; }
-	}
+        object ICollection.SyncRoot
+        {
+            get { return ((ICollection)_firstToSecond).SyncRoot; }
+        }
 
-	public bool IsReadOnly
-	{
-		get { return _firstToSecond.IsReadOnly || _secondToFirst.IsReadOnly; }
-	}
+        bool ICollection.IsSynchronized
+        {
+            get { return ((ICollection)_firstToSecond).IsSynchronized; }
+        }
 
-	public TSecond this[TFirst key]
-	{
-		get { return _firstToSecond[key]; }
-		set
-		{
-			_firstToSecond[key] = value;
-			_secondToFirst[value] = key;
-		}
-	}
+        bool IDictionary.IsFixedSize
+        {
+            get { return ((IDictionary)_firstToSecond).IsFixedSize; }
+        }
 
-	object IDictionary.this[object key]
-	{
-		get { return ((IDictionary)_firstToSecond)[key]; }
-		set
-		{
-			((IDictionary)_firstToSecond)[key] = value;
-			((IDictionary)_secondToFirst)[value] = key;
-		}
-	}
+        public bool IsReadOnly
+        {
+            get { return _firstToSecond.IsReadOnly || _secondToFirst.IsReadOnly; }
+        }
 
-	public ICollection<TFirst> Keys
-	{
-		get { return _firstToSecond.Keys; }
-	}
+        public TSecond this[TFirst key]
+        {
+            get { return _firstToSecond[key]; }
+            set
+            {
+                _firstToSecond[key] = value;
+                _secondToFirst[value] = key;
+            }
+        }
 
-	ICollection IDictionary.Keys
-	{
-		get { return ((IDictionary)_firstToSecond).Keys; }
-	}
+        object IDictionary.this[object key]
+        {
+            get { return ((IDictionary)_firstToSecond)[key]; }
+            set
+            {
+                ((IDictionary)_firstToSecond)[key] = value;
+                ((IDictionary)_secondToFirst)[value] = key;
+            }
+        }
 
-	public ICollection<TSecond> Values
-	{
-		get { return _firstToSecond.Values; }
-	}
+        public ICollection<TFirst> Keys
+        {
+            get { return _firstToSecond.Keys; }
+        }
 
-	ICollection IDictionary.Values
-	{
-		get { return ((IDictionary)_firstToSecond).Values; }
-	}
+        ICollection IDictionary.Keys
+        {
+            get { return ((IDictionary)_firstToSecond).Keys; }
+        }
 
-	public IEnumerator<KeyValuePair<TFirst, TSecond>> GetEnumerator ()
-	{
-		return _firstToSecond.GetEnumerator();
-	}
+        public ICollection<TSecond> Values
+        {
+            get { return _firstToSecond.Values; }
+        }
 
-	IEnumerator IEnumerable.GetEnumerator ()
-	{
-		return GetEnumerator();
-	}
+        ICollection IDictionary.Values
+        {
+            get { return ((IDictionary)_firstToSecond).Values; }
+        }
 
-	IDictionaryEnumerator IDictionary.GetEnumerator ()
-	{
-		return ((IDictionary)_firstToSecond).GetEnumerator();
-	}
+        public IEnumerator<KeyValuePair<TFirst, TSecond>> GetEnumerator()
+        {
+            return _firstToSecond.GetEnumerator();
+        }
 
-	public void Add (TFirst key, TSecond value)
-	{
-		_firstToSecond.Add(key, value);
-		_secondToFirst.Add(value, key);
-	}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-	void IDictionary.Add (object key, object value)
-	{
-		((IDictionary)_firstToSecond).Add(key, value);
-		((IDictionary)_secondToFirst).Add(value, key);
-	}
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            return ((IDictionary)_firstToSecond).GetEnumerator();
+        }
 
-	public void Add (KeyValuePair<TFirst, TSecond> item)
-	{
-		_firstToSecond.Add(item);
-		_secondToFirst.Add(item.Reverse());
-	}
+        public void Add(TFirst key, TSecond value)
+        {
+            _firstToSecond.Add(key, value);
+            _secondToFirst.Add(value, key);
+        }
 
-	public bool ContainsKey (TFirst key)
-	{
-		return _firstToSecond.ContainsKey(key);
-	}
+        void IDictionary.Add(object key, object value)
+        {
+            ((IDictionary)_firstToSecond).Add(key, value);
+            ((IDictionary)_secondToFirst).Add(value, key);
+        }
 
-	public bool Contains (KeyValuePair<TFirst, TSecond> item)
-	{
-		return _firstToSecond.Contains(item);
-	}
+        public void Add(KeyValuePair<TFirst, TSecond> item)
+        {
+            _firstToSecond.Add(item);
+            _secondToFirst.Add(item.Reverse());
+        }
 
-	public bool TryGetValue (TFirst key, out TSecond value)
-	{
-		return _firstToSecond.TryGetValue(key, out value);
-	}
+        public bool ContainsKey(TFirst key)
+        {
+            return _firstToSecond.ContainsKey(key);
+        }
 
-	public bool Remove (TFirst key)
-	{
-		TSecond value;
-		if (_firstToSecond.TryGetValue(key, out value))
-		{
-			_firstToSecond.Remove(key);
-			_secondToFirst.Remove(value);
-			return true;
-		}
-		else
-			return false;
-	}
+        public bool Contains(KeyValuePair<TFirst, TSecond> item)
+        {
+            return _firstToSecond.Contains(item);
+        }
 
-	void IDictionary.Remove (object key)
-	{
-		var firstToSecond = (IDictionary)_firstToSecond;
-		if (!firstToSecond.Contains(key))
-			return;
-		var value = firstToSecond[key];
-		firstToSecond.Remove(key);
-		((IDictionary)_secondToFirst).Remove(value);
-	}
+        public bool TryGetValue(TFirst key, out TSecond value)
+        {
+            return _firstToSecond.TryGetValue(key, out value);
+        }
 
-	public bool Remove (KeyValuePair<TFirst, TSecond> item)
-	{
-		return _firstToSecond.Remove(item);
-	}
+        public bool Remove(TFirst key)
+        {
+            TSecond value;
+            if (_firstToSecond.TryGetValue(key, out value))
+            {
+                _firstToSecond.Remove(key);
+                _secondToFirst.Remove(value);
+                return true;
+            }
+            else
+                return false;
+        }
 
-	public bool Contains (object key)
-	{
-		return ((IDictionary)_firstToSecond).Contains(key);
-	}
+        void IDictionary.Remove(object key)
+        {
+            var firstToSecond = (IDictionary)_firstToSecond;
+            if (!firstToSecond.Contains(key))
+                return;
+            var value = firstToSecond[key];
+            firstToSecond.Remove(key);
+            ((IDictionary)_secondToFirst).Remove(value);
+        }
 
-	public void Clear ()
-	{
-		_firstToSecond.Clear();
-		_secondToFirst.Clear();
-	}
+        public bool Remove(KeyValuePair<TFirst, TSecond> item)
+        {
+            return _firstToSecond.Remove(item);
+        }
 
-	public void CopyTo (KeyValuePair<TFirst, TSecond>[] array, int arrayIndex)
-	{
-		_firstToSecond.CopyTo(array, arrayIndex);
-	}
+        public bool Contains(object key)
+        {
+            return ((IDictionary)_firstToSecond).Contains(key);
+        }
 
-	void ICollection.CopyTo (Array array, int index)
-	{
-		((IDictionary)_firstToSecond).CopyTo(array, index);
-	}
+        public void Clear()
+        {
+            _firstToSecond.Clear();
+            _secondToFirst.Clear();
+        }
 
-	[OnDeserialized]
-	internal void OnDeserialized (StreamingContext context)
-	{
-		_secondToFirst.Clear();
-		foreach (var item in _firstToSecond)
-			_secondToFirst.Add(item.Value, item.Key);
-	}
+        public void CopyTo(KeyValuePair<TFirst, TSecond>[] array, int arrayIndex)
+        {
+            _firstToSecond.CopyTo(array, arrayIndex);
+        }
 
-	private class ReverseDictionary : IDictionary<TSecond, TFirst>, IDictionary
-	{
-		private readonly BiDictionary<TFirst, TSecond> _owner;
+        void ICollection.CopyTo(Array array, int index)
+        {
+            ((IDictionary)_firstToSecond).CopyTo(array, index);
+        }
 
-		public ReverseDictionary (BiDictionary<TFirst, TSecond> owner)
-		{
-			_owner = owner;
-		}
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context)
+        {
+            _secondToFirst.Clear();
+            foreach (var item in _firstToSecond)
+                _secondToFirst.Add(item.Value, item.Key);
+        }
 
-		public int Count
-		{
-			get { return _owner._secondToFirst.Count; }
-		}
+        private class ReverseDictionary : IDictionary<TSecond, TFirst>, IDictionary
+        {
+            private readonly BiDictionary<TFirst, TSecond> _owner;
 
-		object ICollection.SyncRoot
-		{
-			get { return ((ICollection)_owner._secondToFirst).SyncRoot; }
-		}
+            public ReverseDictionary(BiDictionary<TFirst, TSecond> owner)
+            {
+                _owner = owner;
+            }
 
-		bool ICollection.IsSynchronized
-		{
-			get { return ((ICollection)_owner._secondToFirst).IsSynchronized; }
-		}
+            public int Count
+            {
+                get { return _owner._secondToFirst.Count; }
+            }
 
-		bool IDictionary.IsFixedSize
-		{
-			get { return ((IDictionary)_owner._secondToFirst).IsFixedSize; }
-		}
+            object ICollection.SyncRoot
+            {
+                get { return ((ICollection)_owner._secondToFirst).SyncRoot; }
+            }
 
-		public bool IsReadOnly
-		{
-			get { return _owner._secondToFirst.IsReadOnly || _owner._firstToSecond.IsReadOnly; }
-		}
+            bool ICollection.IsSynchronized
+            {
+                get { return ((ICollection)_owner._secondToFirst).IsSynchronized; }
+            }
 
-		public TFirst this[TSecond key]
-		{
-			get { return _owner._secondToFirst[key]; }
-			set
-			{
-				_owner._secondToFirst[key] = value;
-				_owner._firstToSecond[value] = key;
-			}
-		}
+            bool IDictionary.IsFixedSize
+            {
+                get { return ((IDictionary)_owner._secondToFirst).IsFixedSize; }
+            }
 
-		object IDictionary.this[object key]
-		{
-			get { return ((IDictionary)_owner._secondToFirst)[key]; }
-			set
-			{
-				((IDictionary)_owner._secondToFirst)[key] = value;
-				((IDictionary)_owner._firstToSecond)[value] = key;
-			}
-		}
+            public bool IsReadOnly
+            {
+                get { return _owner._secondToFirst.IsReadOnly || _owner._firstToSecond.IsReadOnly; }
+            }
 
-		public ICollection<TSecond> Keys
-		{
-			get { return _owner._secondToFirst.Keys; }
-		}
+            public TFirst this[TSecond key]
+            {
+                get { return _owner._secondToFirst[key]; }
+                set
+                {
+                    _owner._secondToFirst[key] = value;
+                    _owner._firstToSecond[value] = key;
+                }
+            }
 
-		ICollection IDictionary.Keys
-		{
-			get { return ((IDictionary)_owner._secondToFirst).Keys; }
-		}
+            object IDictionary.this[object key]
+            {
+                get { return ((IDictionary)_owner._secondToFirst)[key]; }
+                set
+                {
+                    ((IDictionary)_owner._secondToFirst)[key] = value;
+                    ((IDictionary)_owner._firstToSecond)[value] = key;
+                }
+            }
 
-		public ICollection<TFirst> Values
-		{
-			get { return _owner._secondToFirst.Values; }
-		}
+            public ICollection<TSecond> Keys
+            {
+                get { return _owner._secondToFirst.Keys; }
+            }
 
-		ICollection IDictionary.Values
-		{
-			get { return ((IDictionary)_owner._secondToFirst).Values; }
-		}
+            ICollection IDictionary.Keys
+            {
+                get { return ((IDictionary)_owner._secondToFirst).Keys; }
+            }
 
-		public IEnumerator<KeyValuePair<TSecond, TFirst>> GetEnumerator ()
-		{
-			return _owner._secondToFirst.GetEnumerator();
-		}
+            public ICollection<TFirst> Values
+            {
+                get { return _owner._secondToFirst.Values; }
+            }
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return GetEnumerator();
-		}
+            ICollection IDictionary.Values
+            {
+                get { return ((IDictionary)_owner._secondToFirst).Values; }
+            }
 
-		IDictionaryEnumerator IDictionary.GetEnumerator ()
-		{
-			return ((IDictionary)_owner._secondToFirst).GetEnumerator();
-		}
+            public IEnumerator<KeyValuePair<TSecond, TFirst>> GetEnumerator()
+            {
+                return _owner._secondToFirst.GetEnumerator();
+            }
 
-		public void Add (TSecond key, TFirst value)
-		{
-			_owner._secondToFirst.Add(key, value);
-			_owner._firstToSecond.Add(value, key);
-		}
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
 
-		void IDictionary.Add (object key, object value)
-		{
-			((IDictionary)_owner._secondToFirst).Add(key, value);
-			((IDictionary)_owner._firstToSecond).Add(value, key);
-		}
+            IDictionaryEnumerator IDictionary.GetEnumerator()
+            {
+                return ((IDictionary)_owner._secondToFirst).GetEnumerator();
+            }
 
-		public void Add (KeyValuePair<TSecond, TFirst> item)
-		{
-			_owner._secondToFirst.Add(item);
-			_owner._firstToSecond.Add(item.Reverse());
-		}
+            public void Add(TSecond key, TFirst value)
+            {
+                _owner._secondToFirst.Add(key, value);
+                _owner._firstToSecond.Add(value, key);
+            }
 
-		public bool ContainsKey (TSecond key)
-		{
-			return _owner._secondToFirst.ContainsKey(key);
-		}
+            void IDictionary.Add(object key, object value)
+            {
+                ((IDictionary)_owner._secondToFirst).Add(key, value);
+                ((IDictionary)_owner._firstToSecond).Add(value, key);
+            }
 
-		public bool Contains (KeyValuePair<TSecond, TFirst> item)
-		{
-			return _owner._secondToFirst.Contains(item);
-		}
+            public void Add(KeyValuePair<TSecond, TFirst> item)
+            {
+                _owner._secondToFirst.Add(item);
+                _owner._firstToSecond.Add(item.Reverse());
+            }
 
-		public bool TryGetValue (TSecond key, out TFirst value)
-		{
-			return _owner._secondToFirst.TryGetValue(key, out value);
-		}
+            public bool ContainsKey(TSecond key)
+            {
+                return _owner._secondToFirst.ContainsKey(key);
+            }
 
-		public bool Remove (TSecond key)
-		{
-			TFirst value;
-			if (_owner._secondToFirst.TryGetValue(key, out value))
-			{
-				_owner._secondToFirst.Remove(key);
-				_owner._firstToSecond.Remove(value);
-				return true;
-			}
-			else
-				return false;
-		}
+            public bool Contains(KeyValuePair<TSecond, TFirst> item)
+            {
+                return _owner._secondToFirst.Contains(item);
+            }
 
-		void IDictionary.Remove (object key)
-		{
-			var firstToSecond = (IDictionary)_owner._secondToFirst;
-			if (!firstToSecond.Contains(key))
-				return;
-			var value = firstToSecond[key];
-			firstToSecond.Remove(key);
-			((IDictionary)_owner._firstToSecond).Remove(value);
-		}
+            public bool TryGetValue(TSecond key, out TFirst value)
+            {
+                return _owner._secondToFirst.TryGetValue(key, out value);
+            }
 
-		public bool Remove (KeyValuePair<TSecond, TFirst> item)
-		{
-			return _owner._secondToFirst.Remove(item);
-		}
+            public bool Remove(TSecond key)
+            {
+                TFirst value;
+                if (_owner._secondToFirst.TryGetValue(key, out value))
+                {
+                    _owner._secondToFirst.Remove(key);
+                    _owner._firstToSecond.Remove(value);
+                    return true;
+                }
+                else
+                    return false;
+            }
 
-		public bool Contains (object key)
-		{
-			return ((IDictionary)_owner._secondToFirst).Contains(key);
-		}
+            void IDictionary.Remove(object key)
+            {
+                var firstToSecond = (IDictionary)_owner._secondToFirst;
+                if (!firstToSecond.Contains(key))
+                    return;
+                var value = firstToSecond[key];
+                firstToSecond.Remove(key);
+                ((IDictionary)_owner._firstToSecond).Remove(value);
+            }
 
-		public void Clear ()
-		{
-			_owner._secondToFirst.Clear();
-			_owner._firstToSecond.Clear();
-		}
+            public bool Remove(KeyValuePair<TSecond, TFirst> item)
+            {
+                return _owner._secondToFirst.Remove(item);
+            }
 
-		public void CopyTo (KeyValuePair<TSecond, TFirst>[] array, int arrayIndex)
-		{
-			_owner._secondToFirst.CopyTo(array, arrayIndex);
-		}
+            public bool Contains(object key)
+            {
+                return ((IDictionary)_owner._secondToFirst).Contains(key);
+            }
 
-		void ICollection.CopyTo (Array array, int index)
-		{
-			((IDictionary)_owner._secondToFirst).CopyTo(array, index);
-		}
-	}
-}
+            public void Clear()
+            {
+                _owner._secondToFirst.Clear();
+                _owner._firstToSecond.Clear();
+            }
 
-internal class DictionaryDebugView<TKey, TValue>
-{
-	private readonly IDictionary<TKey, TValue> _dictionary;
+            public void CopyTo(KeyValuePair<TSecond, TFirst>[] array, int arrayIndex)
+            {
+                _owner._secondToFirst.CopyTo(array, arrayIndex);
+            }
 
-	[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-	public KeyValuePair<TKey, TValue>[] Items
-	{
-		get
-		{
-			var array = new KeyValuePair<TKey, TValue>[_dictionary.Count];
-			_dictionary.CopyTo(array, 0);
-			return array;
-		}
-	}
+            void ICollection.CopyTo(Array array, int index)
+            {
+                ((IDictionary)_owner._secondToFirst).CopyTo(array, index);
+            }
+        }
+    }
 
-	public DictionaryDebugView (IDictionary<TKey, TValue> dictionary)
-	{
-		if (dictionary == null)
-			throw new ArgumentNullException("dictionary");
-		_dictionary = dictionary;
-	}
-}
+    internal class DictionaryDebugView<TKey, TValue>
+    {
+        private readonly IDictionary<TKey, TValue> _dictionary;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public KeyValuePair<TKey, TValue>[] Items
+        {
+            get
+            {
+                var array = new KeyValuePair<TKey, TValue>[_dictionary.Count];
+                _dictionary.CopyTo(array, 0);
+                return array;
+            }
+        }
+
+        public DictionaryDebugView(IDictionary<TKey, TValue> dictionary)
+        {
+            if (dictionary == null)
+                throw new ArgumentNullException("dictionary");
+            _dictionary = dictionary;
+        }
+    }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace crass
 {
-public class GameObjectNotes : MonoBehaviour
-{
-	[TextArea(5, 5000)]
-	public string Notes;
-}
+    public class GameObjectNotes : MonoBehaviour
+    {
+        [TextArea(5, 5000)]
+        public string Notes;
+    }
 }

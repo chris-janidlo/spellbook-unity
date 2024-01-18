@@ -2,11 +2,11 @@ using System;
 
 namespace crass
 {
-public static class MathfExtra
-{
-    public static int TernarySign (float value)
+    public static class MathfExtra
     {
-        return value == 0 ? 0 : Math.Sign(value);
+        public static int TernarySign(float value)
+        {
+            return value == 0 ? 0 : Math.Sign(value);
+        }
     }
-}
 }
