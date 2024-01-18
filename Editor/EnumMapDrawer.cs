@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -12,10 +13,39 @@ namespace crass
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            try
+            {
+                DrawEnumMap(position, property, label);
+            }
+            catch (Exception)
+            {
+                EditorGUILayout.HelpBox(
+                    "There was an error when drawing this. Make sure that the value "
+                        + "type for this EnumMap can be serialized as part of a List; "
+                        + "for example, Unity cannot serialize nested Lists.",
+                    MessageType.Error
+                );
+            }
+        }
+
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            try
+            {
+                return EnumMapPropertyHeight(property, label);
+            }
+            catch (Exception)
+            {
+                return base.GetPropertyHeight(property, label);
+            }
+        }
+
+        private void DrawEnumMap(Rect position, SerializedProperty property, GUIContent label)
+        {
             EditorGUI.BeginProperty(position, label, property);
 
             Rect foldoutPosition = position;
-            foldoutPosition.height = foldoutLabelHeight(label);
+            foldoutPosition.height = FoldoutLabelHeight(label);
             property.isExpanded = EditorGUI.Foldout(
                 foldoutPosition,
                 property.isExpanded,
@@ -28,7 +58,7 @@ namespace crass
                 EditorGUI.indentLevel++;
                 Rect fieldPosition = EditorGUI.IndentedRect(position);
                 fieldPosition.y +=
-                    foldoutLabelHeight(label) + EditorGUIUtility.standardVerticalSpacing; // ensure fields start below the label
+                    FoldoutLabelHeight(label) + EditorGUIUtility.standardVerticalSpacing; // ensure fields start below the label
 
                 var enums = property.FindPropertyRelative("m_enums");
                 var values = property.FindPropertyRelative("m_values");
@@ -52,14 +82,14 @@ namespace crass
             EditorGUI.EndProperty();
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        private float EnumMapPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (!property.isExpanded)
                 return base.GetPropertyHeight(property, label);
 
             var values = property.FindPropertyRelative("m_values");
 
-            float height = foldoutLabelHeight(label) + EditorGUIUtility.standardVerticalSpacing; // include the label and some space
+            float height = FoldoutLabelHeight(label) + EditorGUIUtility.standardVerticalSpacing; // include the label and some space
             for (int i = 0; i < values.arraySize; i++)
             {
                 height +=
@@ -70,7 +100,7 @@ namespace crass
             return height;
         }
 
-        float foldoutLabelHeight(GUIContent label)
+        private float FoldoutLabelHeight(GUIContent label)
         {
             return EditorGUI.GetPropertyHeight(SerializedPropertyType.String, label);
         }
