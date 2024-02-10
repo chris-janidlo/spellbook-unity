@@ -58,8 +58,10 @@ namespace crass
         public event TransitionHandler OnTransition;
 
         private readonly TParent parent;
+
         private readonly Dictionary<Type, Crate<TParent>> crates =
             new Dictionary<Type, Crate<TParent>>();
+
         private Type initialCrateType;
         private GameObject driver;
 
@@ -150,6 +152,17 @@ namespace crass
             }
         }
 
+        public void SetCrate<TCrate>()
+            where TCrate : Crate<TParent>
+        {
+            DoTransition(GetCrate<TCrate>());
+        }
+
+        public void SetCrate(Type crateType)
+        {
+            DoTransition(GetCrate(crateType));
+        }
+
         internal override void Process(CrateMachineUpdateType updateType)
         {
             switch (updateType)
@@ -168,13 +181,12 @@ namespace crass
 
             Type transition = Crate.GetTransition(updateType);
             if (transition is { } newCrateType)
-                DoTransition(newCrateType);
+                DoTransition(GetCrate(newCrateType));
         }
 
-        private void DoTransition(Type newCrateType)
+        private void DoTransition(Crate<TParent> newCrate)
         {
             var oldCrate = Crate;
-            var newCrate = GetCrate(newCrateType);
 
             oldCrate.OnExit();
             Crate = newCrate;
